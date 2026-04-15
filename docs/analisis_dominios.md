@@ -1,71 +1,37 @@
-# Contexto del sistema 
-El modelo de datos representa un sistema completo para la gestión de aerolíneas.
+# Descripción del dominio 
+El sistema pertenece al dominio de gestión de operaciones de aerolíneas y servicios asociados al transporte aéreo. Su propósito es administrar la información relacionada con aerolíneas, aeropuertos, aeronaves, vuelos, reservas de pasajeros, emisión de tiquetes, procesos de check-in, embarque, manejo de equipaje, pagos y facturación.
 
-# Propósito del modelo de datos
-El modelo de datos tiene como objetivo estructurar la información necesaria para soportar los procesos operativos, comerciales y administrativos de una aerolínea. Permite integrar los siguientes procesos:
-- información de pasajeros
-- operaciones de vuelo
-- reservas y venta de boletos
-- programas de fidelización
-- control de abordaje
-- procesamiento de pagos y facturación
+Además, el sistema integra funcionalidades de gestión de clientes y programas de fidelización, permitiendo registrar usuarios, acumular millas, administrar niveles de membresía y otorgar beneficios a los pasajeros frecuentes.
 
-# Clasificación de entidades
-El modelo de datos se compone de tre tipos principales de entidades:
-1. Entidades de referencia o catálogos
-- reservation_status
-- ticket_status
-- payment_status
-- fare_class
-- maintenance_type
-- customer_category
+El dominio también incluye soporte para operaciones operativas del aeropuerto y del vuelo, como la gestión de puertas de embarque, retrasos, mantenimiento de aeronaves y asignación de asientos.
 
-2. Entidades maestras
-- person
-- airport
-- aircraft
-- flight
-- customer
-- airline
-  
-3. Entidades transaccionales
-- reservation
-- ticket
-- payment
-- invoice
-- check_in
-- boarding_pass
+# Alcance y límites del dominio 
+### Alcance
+El sistema cubre los siguientes procesos principales:
+- Gestión de aerolíneas, aeronaves y aeropuertos.
+- Gestión de vuelos y segmentos de vuelo.
+- Registro de personas, clientes y usuarios del sistema.
+- Gestión de reservas y venta de tiquetes.
+- Procesos de check-in y embarque de pasajeros.
+- Administración de equipaje.
+- Procesamiento de pagos y reembolsos.
+- Facturación e impuestos asociados a ventas.
+- Administración de programas de fidelización y acumulación de millas.
+- Gestión de seguridad del sistema (usuarios, roles y permisos).
 
-# Relaciones entre dominios
-Los diferentes dominios del sistema se encuentra interconectados de la siguiente manera:
-- El dominio Identidad proporciona información de personas utilizada por Clientes, Seguridad y Ventas.
-- El dominio Clientes y fidelización utiliza la información de personas para gestionar cuentas de clientes y programas de millas.
-- El dominio Ventas y reservas se relaciona con Operaciones de vuelo para asociar reservas y boletos a vuelos específicos.
-- El dominio Abordaje utiliza la información de Ventas y reservas para validar pasajeros y generar pases de abordaje.
-- El dominio Pagos registra las transacciones financieras derivadas de las ventas.
-- El dominio Facturación genera documentos contables a partir de las transacciones registradas en pagos.
+### Límites del dominio
+El sistema no cubre:
+- Control de tráfico aéreo.
+- Gestión meteorológica.
+- Planificación de rutas aéreas a nivel aeronáutico.
+- Operación física de aeronaves.
+- Sistemas externos de pago o bancos (solo se registra la transacción).
+- Sistemas de seguridad aeroportuaria o migración.
 
-# Flujo principal del negocio
-El funcionamiento general del sistema sigue el siguiente flujo:
-1. Un cliente realiza una reserva de un vuelo.
-2. El sistema genera una venta y posteriormente un boleto (ticket) asociado al pasajero.
-3. El cliente realiza el pago correspondiente a la compra.
-4. El sistema genera la factura de la transacción.
-5. Antes del vuelo, el pasajero realiza el check-in.
-6. Se asigna un asiento y se registra el equipaje.
-7. Se genera el boarding pass para el proceso de abordaje.
-8. Finalmente, el pasajero aborda el vuelo programado.
+Estos sistemas pueden integrarse externamente pero no forman parte del dominio central.
 
-# Reglas de nogicio principales 
-- Un cliente puede tener múltiples reservas.
-- Una reserva puede incluir varios pasajeros.
-- Cada ticket corresponde a un pasajero específico y a un segmento de vuelo.
-- Un pasajero debe completar el proceso de check-in para obtener su pase de abordaje.
-- Cada pago puede generar una factura asociada.
-- Los clientes inscritos en el programa de fidelización pueden acumular millas por sus vuelos.
-
-# Dominios funcionales identificados 
-La base de datos está segmentada por los siguientes sub-dominios:
+# Dominios funcionales identificados
+Del modelo de datos se pueden identificar los siguientes subdominios funcionales:
 - Datos geográficos: ubicación y direcciones
 - Aerolínea: información de aerolineas
 - Identidad: información de personas
@@ -79,137 +45,132 @@ La base de datos está segmentada por los siguientes sub-dominios:
 - Pagos: procesamiento financiero
 - Facturación: facturas e impuestos
 
-# Dominios específicos con sus respectivas entidades
-### Dominio geográfico 
-Número de entidades: 8
-Entidades principales:
-- time_zone
-- continent
-- country
-- state_province
-- city
-- district
-- address
-- currency
+# Entidades principales del dominio
+Las entidades más importantes del sistema son:
+Airline – Aerolínea que opera los vuelos.
+Airport – Aeropuerto donde se realizan operaciones.
+Aircraft – Aeronave utilizada en vuelos.
+Flight – Vuelo programado por una aerolínea.
+Flight Segment – Tramo de vuelo entre dos aeropuertos.
+Person – Individuo registrado en el sistema.
+Customer – Persona registrada como cliente de la aerolínea.
+Reservation – Reserva de viaje realizada por un cliente.
+Ticket – Documento que confirma el derecho a viajar.
+Seat Assignment – Asignación de asiento en un vuelo.
+Check-in – Proceso de registro previo al embarque.
+Boarding Pass – Documento que permite abordar el avión.
+Payment – Pago realizado por una venta.
+Invoice – Documento fiscal asociado a la venta.
 
-### Dominio de aerolínea 
-Número de entidades: 1
-Entidades principales:
-- airline
-  
-### Dominio de identidad
-Número de entidades: 6
-Entidades principales:
-- person_type
-- document_type
-- contact_type
-- person
-- person_document
-- person_contact
+# Relaciones entre entidades
+Relaciones geográficas:
+- Un continente tiene muchos países.
+- Un país tiene muchos estados o provincias.
+- Un estado tiene muchas ciudades.
+- Una ciudad tiene muchos distritos.
+- Un distrito tiene muchas direcciones.
 
-### Dominio de seguridad
-Entidades principales: 6
-- user_status
-- security_role
-- security_permission
-- user_account
-- user_role
-- role_permission
+Relaciones operativas:
+- Una aerolínea opera muchos vuelos.
+- Un vuelo puede tener varios segmentos de vuelo.
+- Un segmento conecta dos aeropuertos.
 
-### Dominio de clientes y fidelización 
-Número de entidades: 9
-Entidades principales:
-- customer_category
-- benefit_type
-- loyalty_program
-- loyalty_tier
-- customer
-- loyalty_account
-- loyalty_account_tier
-- miles_transaction
-- customer_benefit
+Relaciones comerciales:
+- Un cliente puede realizar muchas reservas.
+- Una reserva puede tener varios pasajeros.
+- Una reserva genera una venta.
+- Una venta produce uno o varios tickets.
 
-### Dominio de aeropuertos
-Número de entidades: 5
-Entidades principales:
-- airport
-- terminal
-- boarding_gate
-- runway
-- airport_regulation
+Relaciones de viaje:
+- Un ticket puede tener varios segmentos de vuelo.
+- Cada ticket_segment puede tener una asignación de asiento.
 
-### Dominio de aeronaves 
-Número de entidades: 9
-Entidades principales:
-- aircraft_manufacturer
-- aircraft_model
-- cabin_class
-- aircraft
-- aircraft_cabin
-- aircraft_seat
-- maintenance_provider
-- maintenance_type
-- maintenance_event
+Relaciones de embarque:
+- Un ticket_segment genera un check-in.
+- Un check-in produce un boarding pass.
 
-### Dominio de operaciones de vuelo
-Número de entidades: 5
-Entidades principales:
-- flight_status
-- delay_reason_type
-- flight
-- flight_segment
-- flight_delay
+Relaciones financieras:
+- Una venta tiene uno o varios pagos.
+- Un pago puede tener transacciones o reembolsos.
 
+# Proceso del dominio
+El funcionamiento general del sistema sigue el siguiente flujo:
+1. Se registra una persona y se convierte en cliente.
+2. El cliente selecciona un itinerario y crea una reserva.
+3. Se registra una venta asociada a la reserva.
+4. El cliente realiza el pago mediante un método de pago.
+5. Se emite un ticket para cada pasajero.
+6. Se asigna asiento para cada segmento del vuelo.
+7. El pasajero realiza el check-in antes del vuelo.
+8. Se genera el pase de abordar.
+9. Se valida el boarding pass en la puerta de embarque.
+10. El vuelo se realiza y el pasajero completa el viaje.
 
-### Dominio de ventas, reservas y boletas
-Número de entidades: 12
-Entidades principales:
-- reservation_status
-- sale_channel
-- fare_class
-- fare
-- ticket_status
-- reservation
-- reservation_passenger
-- sale
-- ticket
-- ticket_segment
-- seat_assignment
-- baggage
+# Reglas de negocio 
+Algunas reglas importantes derivadas del modelo:
 
-### Dominio de abordaje
-Número de entidades: 5
-Entidades principales:
-- boarding_group
-- check_in_status
-- check_in
-- boarding_pass
-- boarding_validation
+- Un vuelo no puede tener el mismo aeropuerto de origen y destino.
+- Un ticket_segment solo puede existir una vez por vuelo y ticket.
+- Un asiento no puede asignarse a dos pasajeros en el mismo vuelo.
+- Un cliente solo puede tener una cuenta de fidelización por programa.
+- Un número de ticket debe ser único.
+- Un equipaje debe tener peso mayor a cero.
+- Un reembolso no puede ser mayor que el pago original.
+- Un asiento solo puede asignarse a un pasajero por segmento de vuelo.
+- Una reserva tiene un código único.
 
-### Dominio de pagos
-Número de entidades: 5
-Entidades principales:
-- payment_status
-- payment_method
-- payment
-- payment_transaction
-- refund
+# Datos clave del dominio 
+Datos críticos:
+- Número de vuelo
+- Código de reserva
+- Número de ticket
+- Número de asiento
+- Código de aeropuerto
+- Código de aerolínea
+- Número de cuenta de fidelización
+- Número de factura
+- Referencia de pago
 
-### Dominio de facturación 
-Número de entidades: 5
-Entidades principales:
-- tax
-- exchange_rate
-- invoice_status
-- invoice
-- invoice_line
+# Glosario de términos 
+Aerolinea (Airline)
+Empresa que opera vuelos comerciales.
 
-# Entidades raíz del negocio
-Entidades principales:
-- reservation
-- flight
-- aircraft
-- customer
-- loyalty_account
-- invoice
-- payment
+Aeropuerto (Airport)
+Infraestructura donde aterrizan y despegan aeronaves.
+
+Reserva (Reservation)
+Solicitud de viaje realizada por un cliente antes de pagar.
+
+Ticket
+Documento que confirma el derecho a viajar.
+
+Segmento de vuelo (Flight Segment)
+Tramo entre dos aeropuertos dentro de un vuelo.
+
+Check-in
+Proceso mediante el cual un pasajero confirma su presencia en el vuelo.
+
+Boarding Pass
+Documento que permite abordar el avión.
+
+Cabina (Cabin Class)
+Clase del asiento dentro del avión (económica, ejecutiva, etc).
+
+Programa de fidelización
+Sistema que otorga beneficios o millas a pasajeros frecuentes.
+
+Millas
+Puntos acumulados por vuelos realizados.
+
+# Conclusiones 
+El dominio modelado representa un sistema integral de gestión de aerolíneas, cubriendo tanto procesos operativos, comerciales y financieros.
+
+El modelo presenta características importantes de diseño:
+
+- Alta normalización (3FN) para evitar redundancia.
+- Separación clara de subdominios funcionales.
+- Uso consistente de identificadores UUID.
+- Control de integridad referencial mediante claves foráneas.
+- Implementación de reglas de negocio mediante constraints.
+
+Esta estructura permite que el sistema sea escalable, mantenible y extensible, facilitando futuras integraciones con sistemas externos como motores de reserva, sistemas de pago o plataformas de gestión aeroportuaria.
